@@ -1,4 +1,4 @@
-package com.rahul.order_app;
+package com.rahul.orderapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
