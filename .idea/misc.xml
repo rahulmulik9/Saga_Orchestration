@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Phase1_Monolithic/order-app/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase2_Microservices/inventory-service/pom.xml" />
       </list>
     </option>
   </component>

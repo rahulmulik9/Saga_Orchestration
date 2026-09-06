@@ -1,0 +1,10 @@
+ services:
+   account-db:
+     image: postgres:18
+     container_name: OrderApp
+     environment:
+       POSTGRES_USER: root
+       POSTGRES_PASSWORD: root
+       POSTGRES_DB: inventorydb
+     ports:
+       - "5433:5432"
