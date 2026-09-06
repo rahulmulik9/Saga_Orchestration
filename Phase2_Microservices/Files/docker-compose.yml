@@ -1,7 +1,7 @@
  services:
    account-db:
      image: postgres:18
-     container_name: OrderApp
+     container_name: ProductService
      environment:
        POSTGRES_USER: root
        POSTGRES_PASSWORD: root

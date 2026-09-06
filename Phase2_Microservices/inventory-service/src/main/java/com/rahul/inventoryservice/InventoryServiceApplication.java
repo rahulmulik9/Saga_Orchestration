@@ -1,4 +1,4 @@
-package com.rahul.inventory_service;
+package com.rahul.inventoryservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

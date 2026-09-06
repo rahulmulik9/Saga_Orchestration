@@ -1,4 +1,4 @@
-package com.rahul.inventory_service;
+package com.rahul.inventoryservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
