@@ -1,5 +1,6 @@
 package com.rahul.inventoryservice.controller;
 
+import com.rahul.inventoryservice.dto.DeductStockRequest;
 import com.rahul.inventoryservice.entity.Product;
 import com.rahul.inventoryservice.service.ProductService;
 import jakarta.validation.Valid;
@@ -36,5 +37,10 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
         return productService.updateProduct(id, product);
+    }
+
+    @PutMapping("/{id}/deduct")
+    public Product deductStock(@PathVariable Long id, @Valid @RequestBody DeductStockRequest request) {
+        return productService.deductStock(id, request.getQuantity());
     }
 }
