@@ -13,7 +13,7 @@
         </processorPath>
         <module name="paymentservice" />
       </profile>
-      <profile name="Annotation profile for inventoryservice" enabled="true">
+      <profile name="Annotation profile for orderservice" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -22,6 +22,7 @@
         </processorPath>
         <module name="inventoryservice" />
         <module name="order-app" />
+        <module name="orderservice" />
       </profile>
     </annotationProcessing>
   </component>
@@ -29,6 +30,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="inventoryservice" options="-parameters" />
       <module name="order-app" options="-parameters" />
+      <module name="orderservice" options="-parameters" />
       <module name="paymentservice" options="-parameters" />
     </option>
   </component>

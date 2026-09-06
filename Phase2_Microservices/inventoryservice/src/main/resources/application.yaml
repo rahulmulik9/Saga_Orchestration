@@ -1,9 +1,9 @@
 server:
-  port: 8081
+  port: 8082
 
 spring:
   application:
-    name: inventory-service
+    name: inventoryservice
 
   datasource:
     url: jdbc:postgresql://localhost:5434/inventorydb
