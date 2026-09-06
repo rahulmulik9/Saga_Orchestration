@@ -36,16 +36,4 @@ public class OrderController {
         return orderService.getAllOrders();
     }
 
-    // TEMPORARY - delete after confirming Feign wiring works (Step 2.5.e)
-    @RestController
-    @RequiredArgsConstructor
-    public class FeignTestController {
-
-        private final InventoryClient inventoryClient;
-
-        @GetMapping("/test/product/{id}")
-        public ProductResponse testGetProduct(@PathVariable Long id) {
-            return inventoryClient.getProduct(id);
-        }
-    }
 }
