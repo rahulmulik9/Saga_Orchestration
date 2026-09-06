@@ -1,6 +1,6 @@
 package com.rahul.orderapp.service;
 
-import com.rahul.orderapp.dto.OrderLineRequest;
+import com.rahul.orderapp.dto.OrderItemRequest;
 import com.rahul.orderapp.dto.PlaceOrderRequest;
 import com.rahul.orderapp.entity.Order;
 import com.rahul.orderapp.entity.OrderItem;
@@ -54,7 +54,7 @@ public class OrderService {
         BigDecimal total = BigDecimal.ZERO;
 
         // 1. Validate stock & deduct
-        for (OrderLineRequest line : request.getItems()) {
+        for (OrderItemRequest line : request.getItems()) {
             Product product = productRepository.findById(line.getProductId())
                     .orElseThrow(() -> new NoSuchElementException("Product not found with id: " + line.getProductId()));
 

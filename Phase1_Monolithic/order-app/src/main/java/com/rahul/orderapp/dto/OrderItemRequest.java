@@ -1,5 +1,7 @@
 package com.rahul.orderapp.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderLineRequest {
+public class OrderItemRequest {
+
+    @NotNull(message = "productId is required")
     private Long productId;
+
+    @Positive(message = "quantity must be positive")
     private int quantity;
 }

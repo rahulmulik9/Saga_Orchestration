@@ -1,5 +1,7 @@
 package com.rahul.orderapp.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlaceOrderRequest {
-    private List<OrderLineRequest> items;
+
+    @NotEmpty(message = "items must not be empty")
+    @Valid
+    private List<OrderItemRequest> items;
 }
