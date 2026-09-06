@@ -1,5 +1,6 @@
 package com.rahul.orderapp.controller;
 
+import com.rahul.orderapp.dto.PlaceOrderRequest;
 import com.rahul.orderapp.entity.Order;
 import com.rahul.orderapp.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,12 @@ public class OrderController {
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
         Order created = orderService.createOrder(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PostMapping("/place")
+    public ResponseEntity<Order> placeOrder(@RequestBody PlaceOrderRequest request) {
+        Order order = orderService.placeOrder(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @GetMapping("/{id}")
