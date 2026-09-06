@@ -1,12 +1,9 @@
 package com.rahul.orderservice.service;
 
-import com.rahul.orderapp.dto.OrderItemRequest;
-import com.rahul.orderapp.dto.PlaceOrderRequest;
-import com.rahul.orderapp.entity.*;
-import com.rahul.orderapp.exception.InsufficientStockException;
-import com.rahul.orderapp.exception.PaymentFailedException;
-import com.rahul.orderapp.repository.OrderRepository;
-import com.rahul.orderapp.repository.ProductRepository;
+import com.rahul.orderservice.dto.PlaceOrderRequest;
+import com.rahul.orderservice.entity.Order;
+import com.rahul.orderservice.entity.OrderStatus;
+import com.rahul.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +18,6 @@ import java.util.NoSuchElementException;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
-    private final PaymentService paymentService;
-
-    public Order createOrder(Order order) {
-        order.setStatus(OrderStatus.PENDING);
-        order.setCreatedAt(LocalDateTime.now());
-        order.getItems().forEach(item -> item.setOrder(order));
-        return orderRepository.save(order);
-    }
 
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)
@@ -40,8 +28,23 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
+    // TEMPORARY STUB (Step 2.4.c) — stock check and payment call removed
+    // because ProductRepository/PaymentService no longer live in this
+    // service. This just persists a PENDING order for now. Step 2.6
+    // reconnects the real flow using Feign clients to inventory-service
+    // and payment-service.
     @Transactional
     public Order placeOrder(PlaceOrderRequest request) {
+        Order order = new Order();
+        order.setStatus(OrderStatus.PENDING);
+        order.setCreatedAt(LocalDateTime.now());
+
+        return orderRepository.save(order);
+    }
+
+    /// ========== old method
+    /*
+     public Order placeOrder(PlaceOrderRequest request) {
         Order order = new Order();
         order.setStatus(OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
@@ -86,4 +89,5 @@ public class OrderService {
 
         return savedOrder;
     }
+    */
 }

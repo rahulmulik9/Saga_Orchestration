@@ -1,7 +1,5 @@
 package com.rahul.orderservice.exception;
 
-import com.rahul.orderapp.exception.ErrorResponse;
-import com.rahul.orderapp.exception.PaymentFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

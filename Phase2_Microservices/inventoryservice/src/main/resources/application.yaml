@@ -17,5 +17,4 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    open-in-view: false
     defer-datasource-initialization: true
