@@ -11,8 +11,10 @@ import com.rahul.orderservice.dto.PlaceOrderRequest;
 import com.rahul.orderservice.entity.Order;
 import com.rahul.orderservice.entity.OrderItem;
 import com.rahul.orderservice.entity.OrderStatus;
+import com.rahul.orderservice.exception.InsufficientStockException;
 import com.rahul.orderservice.exception.PaymentFailedException;
 import com.rahul.orderservice.repository.OrderRepository;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,9 +53,27 @@ public class OrderService {
         order.setStatus(OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
 
+        // PHASE 1: Validate every item BEFORE deducting anything.
+        // Prevents a mid-loop failure from leaving earlier items' stock
+        // already deducted with nothing to roll it back.
+        for (OrderItemRequest line : request.getItems()) {
+            ProductResponse product;
+            try {
+                product = inventoryClient.getProduct(line.getProductId());
+            } catch (FeignException.NotFound ex) {
+                throw new NoSuchElementException("Product not found with id: " + line.getProductId());
+            }
+
+            if (product.getQuantity() < line.getQuantity()) {
+                throw new InsufficientStockException(
+                        "Insufficient stock for product id " + line.getProductId()
+                                + ": requested " + line.getQuantity() + ", available " + product.getQuantity());
+            }
+        }
+
         BigDecimal total = BigDecimal.ZERO;
 
-        // 1. Deduct stock via inventory-service (check + decrement happens there)
+        // PHASE 2: All items validated - now safe to actually deduct.
         for (OrderItemRequest line : request.getItems()) {
             ProductResponse product = inventoryClient.deductStock(
                     line.getProductId(),
@@ -69,14 +89,18 @@ public class OrderService {
             total = total.add(product.getPrice().multiply(BigDecimal.valueOf(line.getQuantity())));
         }
 
-        // 2. Charge payment via payment-service
-        PaymentResponse payment = paymentClient.makePayment(new PaymentRequest(null, total));
+        // Persist as PENDING first so we have a real orderId for payment-service
+        Order savedOrder = orderRepository.save(order);
+
+        // Charge payment via payment-service
+        PaymentResponse payment = paymentClient.makePayment(new PaymentRequest(savedOrder.getId(), total));
         if (!"SUCCESS".equals(payment.getStatus())) {
+            savedOrder.setStatus(OrderStatus.FAILED);
+            orderRepository.save(savedOrder);
             throw new PaymentFailedException("Payment failed for amount: " + total);
         }
 
-        // 3. Create order (COMPLETED)
-        order.setStatus(OrderStatus.COMPLETED);
-        return orderRepository.save(order);
+        savedOrder.setStatus(OrderStatus.COMPLETED);
+        return orderRepository.save(savedOrder);
     }
 }
