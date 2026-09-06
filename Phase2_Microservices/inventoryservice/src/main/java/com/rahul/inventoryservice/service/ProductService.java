@@ -1,7 +1,9 @@
 package com.rahul.inventoryservice.service;
 
 import com.rahul.inventoryservice.entity.Product;
+import com.rahul.inventoryservice.exception.InsufficientStockException;
 import com.rahul.inventoryservice.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,5 +35,19 @@ public class ProductService {
         existing.setPrice(updatedProduct.getPrice());
         existing.setQuantity(updatedProduct.getQuantity());
         return productRepository.save(existing);
+    }
+
+    @Transactional
+    public Product deductStock(Long id, int quantity) {
+        Product product = getProductById(id);
+
+        if (product.getQuantity() < quantity) {
+            throw new InsufficientStockException(
+                    "Insufficient stock for product id " + id
+                            + ": requested " + quantity + ", available " + product.getQuantity());
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+        return productRepository.save(product);
     }
 }
