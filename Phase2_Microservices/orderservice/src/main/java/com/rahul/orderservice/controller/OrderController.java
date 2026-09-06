@@ -1,5 +1,7 @@
 package com.rahul.orderservice.controller;
 
+import com.rahul.orderservice.client.InventoryClient;
+import com.rahul.orderservice.client.dto.ProductResponse;
 import com.rahul.orderservice.dto.PlaceOrderRequest;
 import com.rahul.orderservice.entity.Order;
 import com.rahul.orderservice.service.OrderService;
@@ -32,5 +34,18 @@ public class OrderController {
     @GetMapping
     public List<Order> getAllOrders() {
         return orderService.getAllOrders();
+    }
+
+    // TEMPORARY - delete after confirming Feign wiring works (Step 2.5.e)
+    @RestController
+    @RequiredArgsConstructor
+    public class FeignTestController {
+
+        private final InventoryClient inventoryClient;
+
+        @GetMapping("/test/product/{id}")
+        public ProductResponse testGetProduct(@PathVariable Long id) {
+            return inventoryClient.getProduct(id);
+        }
     }
 }
