@@ -1,3 +1,22 @@
+
+server:
+  port: 8082
+
 spring:
   application:
     name: productservice
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/productdb
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+    defer-datasource-initialization: true
