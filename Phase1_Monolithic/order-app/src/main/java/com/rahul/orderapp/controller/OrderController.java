@@ -3,6 +3,7 @@ package com.rahul.orderapp.controller;
 import com.rahul.orderapp.dto.PlaceOrderRequest;
 import com.rahul.orderapp.entity.Order;
 import com.rahul.orderapp.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,13 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
         Order created = orderService.createOrder(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody PlaceOrderRequest request) {
+    public ResponseEntity<Order> placeOrder(@Valid @RequestBody PlaceOrderRequest request) {
         Order order = orderService.placeOrder(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
