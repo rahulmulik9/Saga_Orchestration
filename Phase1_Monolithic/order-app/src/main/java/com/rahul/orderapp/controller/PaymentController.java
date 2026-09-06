@@ -1,6 +1,6 @@
 package com.rahul.orderapp.controller;
 
-import com.rahul.orderapp.dto.ChargeRequest;
+import com.rahul.orderapp.dto.PaymentRequest;
 import com.rahul.orderapp.entity.Payment;
 import com.rahul.orderapp.service.PaymentService;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<Payment> charge(@Valid @RequestBody ChargeRequest request) {
+    public ResponseEntity<Payment> charge(@Valid @RequestBody PaymentRequest request) {
         Payment payment = paymentService.charge(request.getOrderId(), request.getAmount());
         return ResponseEntity.status(HttpStatus.CREATED).body(payment);
     }

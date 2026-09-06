@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderLineRequest {
+public class OrderItemRequest {
 
     @NotNull(message = "productId is required")
     private Long productId;

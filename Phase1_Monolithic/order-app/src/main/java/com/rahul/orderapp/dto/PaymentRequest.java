@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChargeRequest {
+public class PaymentRequest {
 
     @NotNull(message = "orderId is required")
     private Long orderId;

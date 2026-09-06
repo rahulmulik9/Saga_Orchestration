@@ -17,5 +17,5 @@ public class PlaceOrderRequest {
 
     @NotEmpty(message = "items must not be empty")
     @Valid
-    private List<OrderLineRequest> items;
+    private List<OrderItemRequest> items;
 }

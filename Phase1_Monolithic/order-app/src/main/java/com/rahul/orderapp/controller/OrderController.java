@@ -18,11 +18,11 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping
-    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
-        Order created = orderService.createOrder(order);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
-    }
+//    @PostMapping
+//    public ResponseEntity<Order> createOrder(@Valid @RequestBody Order order) {
+//        Order created = orderService.createOrder(order);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+//    }
 
     @PostMapping("/place")
     public ResponseEntity<Order> placeOrder(@Valid @RequestBody PlaceOrderRequest request) {
