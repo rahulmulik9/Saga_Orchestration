@@ -1,13 +1,12 @@
-
 server:
-  port: 8082
+  port: 8081
 
 spring:
   application:
-    name: productservice
+    name: paymentservice
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/productdb
+    url: jdbc:postgresql://localhost:5433/paymentdb
     username: root
     password: root
     driver-class-name: org.postgresql.Driver

@@ -1,13 +1,13 @@
-package com.rahul.productservice;
+package com.rahul.paymentservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProductserviceApplication {
+public class PaymentserviceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProductserviceApplication.class, args);
+		SpringApplication.run(PaymentserviceApplication.class, args);
 	}
 
 }
