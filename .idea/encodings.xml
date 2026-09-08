@@ -5,5 +5,9 @@
     <file url="file://$PROJECT_DIR$/Phase2_Microservices/inventoryservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Phase2_Microservices/orderservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Phase2_Microservices/paymentservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Phase3_Saga_Orchestration/inventoryservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Phase3_Saga_Orchestration/orderservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Phase3_Saga_Orchestration/paymentservice/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Phase3_Saga_Orchestration/sagaorchestratorservice/src/main/java" charset="UTF-8" />
   </component>
 </project>
