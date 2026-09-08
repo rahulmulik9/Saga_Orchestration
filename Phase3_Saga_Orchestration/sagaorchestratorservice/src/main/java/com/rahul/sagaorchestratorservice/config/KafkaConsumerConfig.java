@@ -1,5 +1,6 @@
 package com.rahul.sagaorchestratorservice.config;
 
+import com.rahul.sagaorchestratorservice.dto.inventory.InventoryReserved;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +37,13 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, OrderCreated> orderCreatedContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, OrderCreated> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-order-created-group", OrderCreated.class));
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String,InventoryReserved> inventoryReservedContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, InventoryReserved> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-inventory-reserved-group",InventoryReserved.class));
         return factory;
     }
 }
