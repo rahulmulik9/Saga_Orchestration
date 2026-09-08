@@ -10,10 +10,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ProcessPaymentListener {
 
-    @KafkaListener(
-            topics = KafkaTopics.PAYMENT_PROCESS,
-            containerFactory = "processPaymentContainerFactory"
-    )
+    @KafkaListener(topics = KafkaTopics.PAYMENT_PROCESS, containerFactory = "processPaymentContainerFactory")
     public void handle(ProcessPaymentCommand command) {
         log.info("Received ProcessPaymentCommand for orderId={}, amount={}",
                 command.getOrderId(), command.getAmount());
