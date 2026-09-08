@@ -4,12 +4,11 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/Phase1_Monolithic/order-app/pom.xml" />
         <option value="$PROJECT_DIR$/Phase2_Microservices/inventory-service/pom.xml" />
         <option value="$PROJECT_DIR$/Phase2_Microservices/productservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase2_Microservices/paymentservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase2_Microservices/inventoryservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase2_Microservices/orderservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase3_Saga_Orchestration/inventoryservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase3_Saga_Orchestration/orderservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase3_Saga_Orchestration/paymentservice/pom.xml" />
       </list>
     </option>
   </component>
