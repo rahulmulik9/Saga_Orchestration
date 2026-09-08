@@ -1,5 +1,6 @@
 package com.rahul.sagaorchestratorservice.config;
 
+import com.rahul.sagaorchestratorservice.dto.inventory.InventoryRejected;
 import com.rahul.sagaorchestratorservice.dto.inventory.InventoryReserved;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -44,6 +45,13 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String,InventoryReserved> inventoryReservedContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, InventoryReserved> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-inventory-reserved-group",InventoryReserved.class));
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, InventoryRejected> inventoryRejectedContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, InventoryRejected> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-inventory-rejected-group", InventoryRejected.class));
         return factory;
     }
 }
