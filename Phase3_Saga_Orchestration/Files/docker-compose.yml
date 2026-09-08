@@ -35,6 +35,18 @@ services:
     volumes:
       - payment-db-data:/var/lib/postgresql
 
+  saga-db:
+    image: postgres:18
+    container_name: saga-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: sagadb
+    ports:
+      - "5436:5432"
+    volumes:
+      - saga-db-data:/var/lib/postgresql
+
   kafka:
     image: apache/kafka:3.8.0
     container_name: kafka
@@ -60,6 +72,7 @@ volumes:
   order-db-data:
   inventory-db-data:
   payment-db-data:
+  saga-db-data:
   kafka-data:
 
 #  1) To clean-restart just Kafka (leave the DBs alone)
