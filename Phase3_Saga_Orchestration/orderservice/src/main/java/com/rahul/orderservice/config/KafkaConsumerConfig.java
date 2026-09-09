@@ -1,6 +1,7 @@
-package com.rahul.inventoryservice.config;
+package com.rahul.orderservice.config;
 
-import com.rahul.inventoryservice.dto.sagaDto.ReleaseInventoryCommand;
+import com.rahul.orderservice.dto.sagaDto.ConfirmOrderCommand;
+import com.rahul.orderservice.dto.sagaDto.OrderFailedCommand;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,8 +11,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
-
-import com.rahul.inventoryservice.dto.sagaDto.ReserveInventoryCommand;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,18 +34,16 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ReserveInventoryCommand> reserveInventoryContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ReserveInventoryCommand> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory("inventoryservice-reserve-group", ReserveInventoryCommand.class));
+    public ConcurrentKafkaListenerContainerFactory<String, ConfirmOrderCommand> confirmOrderContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ConfirmOrderCommand> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("orderservice-confirm-group", ConfirmOrderCommand.class));
         return factory;
     }
 
-
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, ReleaseInventoryCommand> releaseInventoryContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, ReleaseInventoryCommand> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory("inventoryservice-release-group", ReleaseInventoryCommand.class));
+    public ConcurrentKafkaListenerContainerFactory<String, OrderFailedCommand> orderFailedContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, OrderFailedCommand> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("orderservice-failed-group", OrderFailedCommand.class));
         return factory;
     }
 }

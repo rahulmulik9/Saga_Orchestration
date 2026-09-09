@@ -1,8 +1,11 @@
 package com.rahul.sagaorchestratorservice.listener;
 
-import com.rahul.sagaorchestratorservice.dto.inventory.InventoryRejected;
-import com.rahul.sagaorchestratorservice.dto.order.KafkaTopics;
-import com.rahul.sagaorchestratorservice.dto.order.OrderFailedCommand;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.rahul.sagaorchestratorservice.dto.inventory.KafkaTopics;
+import com.rahul.sagaorchestratorservice.dto.inventory.OrderItemEvent;
+import com.rahul.sagaorchestratorservice.dto.inventory.ReleaseInventoryCommand;
+import com.rahul.sagaorchestratorservice.dto.payment.PaymentFailed;
 import com.rahul.sagaorchestratorservice.entity.ProcessedEvent;
 import com.rahul.sagaorchestratorservice.entity.SagaState;
 import com.rahul.sagaorchestratorservice.entity.SagaStatus;
@@ -15,40 +18,47 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class InventoryRejectedListener {
+public class PaymentFailedListener {
 
-    private static final String EVENT_TYPE = "INVENTORY_REJECTED";
-    private final ProcessedEventRepository processedEventRepository;
+    private static final String EVENT_TYPE = "PAYMENT_FAILED";
+
     private final SagaStateRepository sagaStateRepository;
+    private final ProcessedEventRepository processedEventRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final ObjectMapper objectMapper;
 
     @KafkaListener(
-            topics = com.rahul.sagaorchestratorservice.dto.inventory.KafkaTopics.INVENTORY_REJECTED,
-            containerFactory = "inventoryRejectedContainerFactory"
+            topics = com.rahul.sagaorchestratorservice.dto.payment.KafkaTopics.PAYMENT_FAILED,
+            containerFactory = "paymentFailedContainerFactory"
     )
-    public void handle(InventoryRejected event) {
+    public void handle(PaymentFailed event) throws Exception {
         if (processedEventRepository.existsByOrderIdAndEventType(event.getOrderId(), EVENT_TYPE)) {
             log.info("orderId={} already processed for {}, skipping (idempotent)", event.getOrderId(), EVENT_TYPE);
             return;
         }
+
         SagaState sagaState = sagaStateRepository.findByOrderId(event.getOrderId()).orElse(null);
         if (sagaState == null) {
-            log.warn("No SagaState found for orderId={}, ignoring InventoryRejected", event.getOrderId());
+            log.warn("No SagaState found for orderId={}, ignoring PaymentFailed", event.getOrderId());
             return;
         }
 
-        sagaState.setStatus(SagaStatus.FAILED);
+        sagaState.setStatus(SagaStatus.COMPENSATING);
         sagaState.setUpdatedAt(LocalDateTime.now());
         sagaStateRepository.save(sagaState);
 
-        OrderFailedCommand command = new OrderFailedCommand(event.getOrderId(), event.getReason());
-        kafkaTemplate.send(KafkaTopics.ORDER_FAILED, command);
+        List<OrderItemEvent> items = objectMapper.readValue(
+                sagaState.getItemsJson(), new TypeReference<List<OrderItemEvent>>() {});
+
+        kafkaTemplate.send(KafkaTopics.INVENTORY_RELEASE, new ReleaseInventoryCommand(event.getOrderId(), items));
         processedEventRepository.save(new ProcessedEvent(null, event.getOrderId(), EVENT_TYPE, LocalDateTime.now()));
-        log.info("Saga FAILED for orderId={}, reason={}, notified order-service", event.getOrderId(), event.getReason());
+
+        log.info("Saga COMPENSATING for orderId={}, reason={}, sent ReleaseInventoryCommand",
+                event.getOrderId(), event.getReason());
     }
 }
-

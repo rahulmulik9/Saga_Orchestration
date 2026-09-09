@@ -9,25 +9,24 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "processed_events", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"order_id", "event_type"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SagaState {
+public class ProcessedEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long sagaId;
+    private Long id;
 
+    @Column(name = "order_id")
     private Long orderId;
 
-    @Enumerated(EnumType.STRING)
-    private SagaStatus status;
+    @Column(name = "event_type")
+    private String eventType; // e.g. "RESERVE_INVENTORY", "PAYMENT_COMPLETED"
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    @Lob
-    private String itemsJson;
+    private LocalDateTime processedAt;
 }

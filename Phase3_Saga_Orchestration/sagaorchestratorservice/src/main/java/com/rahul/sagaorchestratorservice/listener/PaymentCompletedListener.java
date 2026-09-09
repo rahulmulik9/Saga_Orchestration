@@ -1,8 +1,9 @@
 package com.rahul.sagaorchestratorservice.listener;
 
-import com.rahul.sagaorchestratorservice.dto.inventory.InventoryReserved;
-import com.rahul.sagaorchestratorservice.dto.payment.KafkaTopics;
-import com.rahul.sagaorchestratorservice.dto.payment.ProcessPaymentCommand;
+import com.rahul.sagaorchestratorservice.dto.order.ConfirmOrderCommand;
+import com.rahul.sagaorchestratorservice.dto.order.KafkaTopics;
+import com.rahul.sagaorchestratorservice.dto.payment.PaymentCompleted;
+import com.rahul.sagaorchestratorservice.entity.ProcessedEvent;
 import com.rahul.sagaorchestratorservice.entity.SagaState;
 import com.rahul.sagaorchestratorservice.entity.SagaStatus;
 import com.rahul.sagaorchestratorservice.repository.ProcessedEventRepository;
@@ -18,35 +19,34 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class InventoryReservedListener {
-
-    private static final String EVENT_TYPE = "INVENTORY_RESERVED";
+public class PaymentCompletedListener {
+    private static final String EVENT_TYPE = "PAYMENT_COMPLETED";
     private final ProcessedEventRepository processedEventRepository;
     private final SagaStateRepository sagaStateRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @KafkaListener(
-            topics = com.rahul.sagaorchestratorservice.dto.inventory.KafkaTopics.INVENTORY_RESERVED,
-            containerFactory = "inventoryReservedContainerFactory"
+            topics = com.rahul.sagaorchestratorservice.dto.payment.KafkaTopics.PAYMENT_COMPLETED,
+            containerFactory = "paymentCompletedContainerFactory"
     )
-    public void handle(InventoryReserved event) {
+    public void handle(PaymentCompleted event) {
         if (processedEventRepository.existsByOrderIdAndEventType(event.getOrderId(), EVENT_TYPE)) {
             log.info("orderId={} already processed for {}, skipping (idempotent)", event.getOrderId(), EVENT_TYPE);
             return;
         }
         SagaState sagaState = sagaStateRepository.findByOrderId(event.getOrderId()).orElse(null);
         if (sagaState == null) {
-            log.warn("No SagaState found for orderId={}, ignoring InventoryReserved", event.getOrderId());
+            log.warn("No SagaState found for orderId={}, ignoring PaymentCompleted", event.getOrderId());
             return;
         }
 
-        sagaState.setStatus(SagaStatus.INVENTORY_RESERVED);
+        sagaState.setStatus(SagaStatus.PAYMENT_COMPLETED);
         sagaState.setUpdatedAt(LocalDateTime.now());
         sagaStateRepository.save(sagaState);
 
-        ProcessPaymentCommand command = new ProcessPaymentCommand(event.getOrderId(), event.getTotalAmount());
-        kafkaTemplate.send(KafkaTopics.PAYMENT_PROCESS, command);
-
-        log.info("Saga INVENTORY_RESERVED for orderId={}, sent ProcessPaymentCommand", event.getOrderId());
+        ConfirmOrderCommand command = new ConfirmOrderCommand(event.getOrderId());
+        kafkaTemplate.send(KafkaTopics.ORDER_CONFIRM, command);
+        processedEventRepository.save(new ProcessedEvent(null, event.getOrderId(), EVENT_TYPE, LocalDateTime.now()));
+        log.info("Saga PAYMENT_COMPLETED for orderId={}, sent ConfirmOrderCommand", event.getOrderId());
     }
 }
