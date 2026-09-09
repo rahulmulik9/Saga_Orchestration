@@ -1,0 +1,229 @@
+{
+  "info": {
+    "name": "Phase 2 - Order/Inventory/Payment Microservices",
+    "description": "order-service (8081), inventory-service (8082), payment-service (8083). Import into Postman; edit the collection variables to change ports if needed.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "orderBaseUrl", "value": "http://localhost:8081" },
+    { "key": "inventoryBaseUrl", "value": "http://localhost:8082" },
+    { "key": "paymentBaseUrl", "value": "http://localhost:8083" }
+  ],
+  "item": [
+    {
+      "name": "Inventory Service",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": "{{inventoryBaseUrl}}/products"
+          }
+        },
+        {
+          "name": "Get Product By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{inventoryBaseUrl}}/products/1"
+          }
+        },
+        {
+          "name": "Get Product By Id - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{inventoryBaseUrl}}/products/9999"
+          }
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{inventoryBaseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Widget\",\n  \"price\": 9.99,\n  \"quantity\": 50\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Product - Validation Error (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{inventoryBaseUrl}}/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"price\": -5,\n  \"quantity\": -1\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{inventoryBaseUrl}}/products/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Widget Deluxe\",\n  \"price\": 12.99,\n  \"quantity\": 40\n}"
+            }
+          }
+        },
+        {
+          "name": "Deduct Stock",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{inventoryBaseUrl}}/products/1/deduct",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Deduct Stock - Insufficient Stock (400)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{inventoryBaseUrl}}/products/3/deduct",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 999\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payment Service",
+      "item": [
+        {
+          "name": "Make Payment - Success",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{paymentBaseUrl}}/payments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 1,\n  \"amount\": 500\n}"
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Simulated Failure (amount >= 10000)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{paymentBaseUrl}}/payments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 1,\n  \"amount\": 15000\n}"
+            }
+          }
+        },
+        {
+          "name": "Make Payment - Validation Error (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{paymentBaseUrl}}/payments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": 1,\n  \"amount\": -50\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Payment By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{paymentBaseUrl}}/payments/1"
+          }
+        },
+        {
+          "name": "Get Payment By Id - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{paymentBaseUrl}}/payments/9999"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Order Service",
+      "item": [
+        {
+          "name": "Place Order - Happy Path",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{orderBaseUrl}}/orders/place",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": 1, \"quantity\": 2 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Place Order - Insufficient Stock (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{orderBaseUrl}}/orders/place",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": 3, \"quantity\": 999 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Place Order - Payment Failure (402) - stock stays deducted",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{orderBaseUrl}}/orders/place",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"productId\": 2, \"quantity\": 2 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Place Order - Validation Error (400, empty items)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{orderBaseUrl}}/orders/place",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": []\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "url": "{{orderBaseUrl}}/orders/1"
+          }
+        },
+        {
+          "name": "Get Order By Id - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{orderBaseUrl}}/orders/9999"
+          }
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "url": "{{orderBaseUrl}}/orders"
+          }
+        }
+      ]
+    }
+  ]
+}
