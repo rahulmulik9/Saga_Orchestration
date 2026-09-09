@@ -1,11 +1,6 @@
 package com.rahul.sagaorchestratorservice.entity;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,4 +27,7 @@ public class SagaState {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Lob
+    private String itemsJson;
 }
