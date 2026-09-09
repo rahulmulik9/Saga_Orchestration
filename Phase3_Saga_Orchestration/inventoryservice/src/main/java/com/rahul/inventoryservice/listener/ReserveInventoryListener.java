@@ -1,5 +1,7 @@
 package com.rahul.inventoryservice.listener;
 
+import com.rahul.inventoryservice.dto.sagaDto.InventoryRejected;
+import com.rahul.inventoryservice.dto.sagaDto.InventoryReserved;
 import com.rahul.inventoryservice.dto.sagaDto.KafkaTopics;
 import com.rahul.inventoryservice.dto.sagaDto.OrderItemEvent;
 import com.rahul.inventoryservice.dto.sagaDto.ReserveInventoryCommand;
@@ -8,6 +10,7 @@ import com.rahul.inventoryservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ import java.math.BigDecimal;
 public class ReserveInventoryListener {
 
     private final ProductRepository productRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @KafkaListener(topics = KafkaTopics.INVENTORY_RESERVE, containerFactory = "reserveInventoryContainerFactory")
     @Transactional
@@ -31,7 +35,9 @@ public class ReserveInventoryListener {
             if (product == null || product.getQuantity() < item.getQuantity()) {
                 log.info("Reservation FAILED for orderId={}, productId={}",
                         command.getOrderId(), item.getProductId());
-                // publish InventoryRejected comes in Step 4.3
+
+                kafkaTemplate.send(KafkaTopics.INVENTORY_REJECTED,
+                        new InventoryRejected(command.getOrderId(), "Insufficient stock"));
                 return;
             }
         }
@@ -46,6 +52,8 @@ public class ReserveInventoryListener {
         }
 
         log.info("Reservation SUCCESS for orderId={}, totalAmount={}", command.getOrderId(), totalAmount);
-        // publish InventoryReserved comes in Step 4.3
+
+        kafkaTemplate.send(KafkaTopics.INVENTORY_RESERVED,
+                new InventoryReserved(command.getOrderId(), totalAmount));
     }
 }
