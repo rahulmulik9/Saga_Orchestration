@@ -28,6 +28,5 @@ public class SagaState {
 
     private LocalDateTime updatedAt;
 
-    @Lob
     private String itemsJson;
 }
