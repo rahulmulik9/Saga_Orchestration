@@ -1,5 +1,6 @@
 package com.rahul.inventoryservice.config;
 
+import com.rahul.inventoryservice.dto.sagaDto.ReleaseInventoryCommand;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,4 +42,11 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, ReleaseInventoryCommand> releaseInventoryContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, ReleaseInventoryCommand> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("inventoryservice-release-group", ReleaseInventoryCommand.class));
+        return factory;
+    }
 }
