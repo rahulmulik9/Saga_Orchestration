@@ -40,4 +40,5 @@ public class KafkaConsumerConfig {
         factory.setConsumerFactory(consumerFactory("inventoryservice-reserve-group", ReserveInventoryCommand.class));
         return factory;
     }
+
 }

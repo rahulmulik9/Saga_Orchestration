@@ -2,6 +2,8 @@ package com.rahul.sagaorchestratorservice.config;
 
 import com.rahul.sagaorchestratorservice.dto.inventory.InventoryRejected;
 import com.rahul.sagaorchestratorservice.dto.inventory.InventoryReserved;
+import com.rahul.sagaorchestratorservice.dto.payment.PaymentCompleted;
+import com.rahul.sagaorchestratorservice.dto.payment.PaymentFailed;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +54,23 @@ public class KafkaConsumerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, InventoryRejected> inventoryRejectedContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, InventoryRejected> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-inventory-rejected-group", InventoryRejected.class));
+        return factory;
+    }
+
+
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentCompleted> paymentCompletedContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentCompleted> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-payment-completed-group", PaymentCompleted.class));
+        return factory;
+    }
+
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, PaymentFailed> paymentFailedContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, PaymentFailed> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory("sagaorchestratorservice-payment-failed-group", PaymentFailed.class));
         return factory;
     }
 }
