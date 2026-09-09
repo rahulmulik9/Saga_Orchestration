@@ -5,6 +5,7 @@ import com.rahul.sagaorchestratorservice.dto.payment.KafkaTopics;
 import com.rahul.sagaorchestratorservice.dto.payment.ProcessPaymentCommand;
 import com.rahul.sagaorchestratorservice.entity.SagaState;
 import com.rahul.sagaorchestratorservice.entity.SagaStatus;
+import com.rahul.sagaorchestratorservice.repository.ProcessedEventRepository;
 import com.rahul.sagaorchestratorservice.repository.SagaStateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 @Slf4j
 public class InventoryReservedListener {
 
+    private static final String EVENT_TYPE = "INVENTORY_RESERVED";
+    private final ProcessedEventRepository processedEventRepository;
     private final SagaStateRepository sagaStateRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -27,6 +30,10 @@ public class InventoryReservedListener {
             containerFactory = "inventoryReservedContainerFactory"
     )
     public void handle(InventoryReserved event) {
+        if (processedEventRepository.existsByOrderIdAndEventType(event.getOrderId(), EVENT_TYPE)) {
+            log.info("orderId={} already processed for {}, skipping (idempotent)", event.getOrderId(), EVENT_TYPE);
+            return;
+        }
         SagaState sagaState = sagaStateRepository.findByOrderId(event.getOrderId()).orElse(null);
         if (sagaState == null) {
             log.warn("No SagaState found for orderId={}, ignoring InventoryReserved", event.getOrderId());
