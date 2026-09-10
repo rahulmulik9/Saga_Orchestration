@@ -31,3 +31,9 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
+
+logging:
+  level:
+    org.apache.kafka: OFF
+    org.springframework.kafka: OFF
+    com.rahul: INFO

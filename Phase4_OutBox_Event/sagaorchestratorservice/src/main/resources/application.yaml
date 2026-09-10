@@ -30,3 +30,10 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
+
+
+logging:
+  level:
+    org.apache.kafka: OFF
+    org.springframework.kafka: OFF
+    com.rahul: INFO
