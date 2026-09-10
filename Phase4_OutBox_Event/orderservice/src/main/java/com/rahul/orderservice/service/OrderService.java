@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final OrderRepository orderRepository;
 

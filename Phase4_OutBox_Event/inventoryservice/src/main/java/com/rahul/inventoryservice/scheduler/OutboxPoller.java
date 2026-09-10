@@ -18,7 +18,7 @@ import java.util.List;
 public class OutboxPoller {
 
     private final OutboxEventRepository outboxEventRepository;
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Scheduled(fixedDelay = 3000)
     @Transactional

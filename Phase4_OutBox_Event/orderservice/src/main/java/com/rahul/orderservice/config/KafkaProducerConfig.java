@@ -1,4 +1,4 @@
-package com.rahul.paymentservice.config;
+package com.rahul.orderservice.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -19,6 +19,22 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    // For sending real objects directly (e.g. OrderService.placeOrder -> OrderCreated)
+    @Bean
+    public ProducerFactory<String, Object> objectProducerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, Object> kafkaTemplate() {
+        return new KafkaTemplate<>(objectProducerFactory());
+    }
+
+    // For the outbox poller, sending pre-built JSON strings as-is
     @Bean
     public ProducerFactory<String, String> stringProducerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -33,3 +49,4 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(stringProducerFactory());
     }
 }
+ 
