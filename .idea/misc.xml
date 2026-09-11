@@ -6,10 +6,10 @@
       <list>
         <option value="$PROJECT_DIR$/Phase2_Microservices/inventory-service/pom.xml" />
         <option value="$PROJECT_DIR$/Phase2_Microservices/productservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase4_OutBox_Event/sagaorchestratorservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase4_OutBox_Event/paymentservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase4_OutBox_Event/orderservice/pom.xml" />
-        <option value="$PROJECT_DIR$/Phase4_OutBox_Event/inventoryservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase-5-Complete-Code/inventoryservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase-5-Complete-Code/orderservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase-5-Complete-Code/paymentservice/pom.xml" />
+        <option value="$PROJECT_DIR$/Phase-5-Complete-Code/sagaorchestratorservice/pom.xml" />
       </list>
     </option>
   </component>

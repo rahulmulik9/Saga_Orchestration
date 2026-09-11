@@ -1,6 +1,5 @@
 package com.rahul.orderservice.controller;
 
-import com.rahul.orderservice.client.dto.ProductResponse;
 import com.rahul.orderservice.dto.PlaceOrderRequest;
 import com.rahul.orderservice.entity.Order;
 import com.rahul.orderservice.service.OrderService;
