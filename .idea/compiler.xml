@@ -9,8 +9,8 @@
         <outputRelativeToContentRoot value="true" />
         <module name="inventoryservice" />
         <module name="paymentservice" />
-        <module name="sagaorchestratorservice" />
         <module name="orderservice" />
+        <module name="sagaorchestratorservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
